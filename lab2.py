@@ -109,8 +109,6 @@ def test_newton_method():
 
 ##########################################################################################
 
-#def lab_test() 
-
 if __name__ == "__main__":
     test_conjugate_gradient_method()
     test_newton_method()
