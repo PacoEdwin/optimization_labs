@@ -1,7 +1,7 @@
 import ast, getopt, sys, copy, os
 from fractions import Fraction
 
-class SimplexSolver():
+class SimplexMethod():
     def __init__(self):
         self.A = []
         self.b = []
@@ -192,19 +192,19 @@ class SimplexSolver():
         return I
 
 def run_test():
-    SimplexSolver().run_simplex([[2,1], [1,2]], [4,3], [1,1], 'min')
-    SimplexSolver().run_simplex(
+    SimplexMethod().run_simplex([[2,1], [1,2]], [4,3], [1,1], 'min')
+    SimplexMethod().run_simplex(
         [[3,4,1,0,0], [3,1,0,1,0], [1,0,0,0,1]],
         [32,17,5],
         [2,1,0,0,0]
     )
-    SimplexSolver().run_simplex(
+    SimplexMethod().run_simplex(
         [[1,3,3,1], [2,0,3,-1]], 
         [3,4],
         [-1,5,1,-1],
         'min'
     )
-    SimplexSolver().run_simplex(
+    SimplexMethod().run_simplex(
         [[2,1],[1,1]],
         [6,4],
         [3,2],
@@ -247,4 +247,4 @@ if __name__ == '__main__':
     if p not in ('max', 'min'):
         p = 'max'
     
-    SimplexSolver().run_simplex(A, b, c, p)
+    SimplexMethod().run_simplex(A, b, c, p)
