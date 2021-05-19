@@ -9,10 +9,9 @@ class SimplexSolver():
         self.tableau = []
         self.entering = []
         self.departing = []
-        self.ineq = []
         self.prob = "max"
 
-    def run_simplex(self, A, b, c, prob = 'max', enable_msg = False):
+    def run_simplex(self, A, b, c, prob = 'max'):
         self.prob = prob
 
         self.set_simplex_input(A, b, c)
@@ -96,7 +95,7 @@ class SimplexSolver():
 
     # Perform operations on pivot.
     def pivot(self, pivot_index):
-        j,i = pivot_index
+        j, i = pivot_index
 
         pivot = self.tableau[i][j]
         self.tableau[i] = [element / pivot for
@@ -105,7 +104,7 @@ class SimplexSolver():
            if index != i:
               row_scale = [y * self.tableau[index][j]
                           for y in self.tableau[i]]
-              self.tableau[index] = [x - y for x,y in
+              self.tableau[index] = [x - y for x, y in
                                      zip(self.tableau[index],
                                          row_scale)]
 
@@ -114,7 +113,7 @@ class SimplexSolver():
     # Get entering variable by determining the 'most negative'
     #        element of the bottom row.
     def get_entering_var(self):
-        bottom_row = self.tableau[len(self.tableau) - 1]
+        bottom_row = self.tableau[-1]
         most_neg_ind = 0
         most_neg = bottom_row[most_neg_ind]
         for index, value in enumerate(bottom_row):
@@ -176,10 +175,8 @@ class SimplexSolver():
         solution['z'] = self.tableau[-1][len(self.tableau[0]) - 1]
         
         # If this is a minimization problem...
-        if (self.prob == 'min'):
-            # ... then get x_1, ..., x_n  from last element of
-            # the slack columns.
-            bottom_row = self.tableau[len(self.tableau) - 1]
+        if self.prob == 'min':
+            bottom_row = self.tableau[-1]
             for v in self.entering:
                 if 's' in v:
                     solution[v.replace('s', 'x')] = bottom_row[self.entering.index(v)]    
@@ -194,6 +191,20 @@ class SimplexSolver():
             I.append(row)
         return I
 
+def run_test():
+    SimplexSolver().run_simplex([[2,1], [1,2]], [4,3], [1,1])
+    SimplexSolver().run_simplex(
+        [[3,4,1,0,0], [3,1,0,1,0], [1,0,0,0,1]], 
+        [32,17,5],
+        [2,1,0,0,0]
+    )
+    SimplexSolver().run_simplex(
+        [[1,3,3,1], [2,0,3,-1]], 
+        [3,4],
+        [-1,5,1,-1],
+        'min'
+    )
+
 if __name__ == '__main__':
     A = []
     b = []
@@ -202,19 +213,18 @@ if __name__ == '__main__':
     argv = sys.argv[1:]
 
     try:
-        opts, args = getopt.getopt(argv,"hA:b:c:p:",["A=","b=","c=","p="])
+        opts, args = getopt.getopt(argv,"thA:b:c:p:",["A=","b=","c=","p="])
     except getopt.GetoptError:
         print('simplex.py -A <matrix> -b <vector> -c <vector> -p <type>')
         sys.exit(2)
 
     for opt, arg in opts:
         if opt == '-h':
-            print('simplex.py -A <matrix> -b <vector> -c <vector> -p <obj_func_type>')
-            print('A: Matrix that represents coefficients of constraints.')
-            print('b: Ax <= b')
-            print('c: Coefficients of objective function.')
-            print('p: Indicates max or min objective function.')
+            print('simplex.py -A <matrix> -b <vector> -c <vector> -p <obj_func_type> -t <tests>')
             sys.exit()
+        elif opt == '-t':
+            print('Tests... \n')
+            run_test()
         elif opt in ("-A"):
             A = ast.literal_eval(arg)
         elif opt in ("-b"):
@@ -224,11 +234,11 @@ if __name__ == '__main__':
         elif opt in ("-p"):
             p = arg.strip()
     if not A or not b or not c:
-        print('Must provide arguments for A, b, c (use -h for more info)')
+        print('Must provide arguments for A, b, c (use -h for more info) (use -t for tests)')
         sys.exit()
 
     # Assume maximization problem as default.
     if p not in ('max', 'min'):
         p = 'max'
     
-    SimplexSolver().run_simplex(A, b, c, prob=p, enable_msg=True)
+    SimplexSolver().run_simplex(A, b, c, p)
