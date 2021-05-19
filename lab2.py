@@ -19,26 +19,35 @@ def conjugate_gradient_method(A, b, eps, x = None):
 
         x = x + np.dot(alpha, p)
         r = r - np.dot(alpha, Ap)
-        r_new_dot = np.dot(np.transpose(r), r)
-        
-        if np.sqrt(r_new_dot) < eps:
+
+        if np.linalg.norm(r) < eps:
             break
-        
-        p = r + (r_dot / r_new_dot)*p
+
+        r_new_dot = np.dot(np.transpose(r), r)
+        p = r + (r_new_dot/r_dot)*p
         r_dot = r_new_dot
 
     return x
 
 def test_conjugate_gradient_method():
+    print('conjugate gradient method')
+    
     eps = 1e-7
     n = 2
-    P = np.random.normal(size=[n, n])
-    #A = np.dot(P.T, P)
+
     A = np.array([[1,0], [0,1]])
     b = np.ones(n)
 
     res = conjugate_gradient_method(A, b, eps)
-    print('conjugate gradient method result', res)
+    print('custom functiom test', res)
+
+    A = np.array([[202,-200],[-200, 200]])
+    b = np.array([2,0])
+
+    res = conjugate_gradient_method(A, b, eps)
+    print('quadratic functiom test', res)
+
+    print('')
 
 ##########################################################################################
 
@@ -63,17 +72,19 @@ def newton_method(func, eps, x):
     return x
 
 def test_newton_method():
+    print('newton method test')
+
     eps = 1e-7
     
     x = np.random.normal(size=[2])
-    func = lambda x: 100*((x[0] - x[1]) ** 2) + ((1 - x[1]) ** 2)
+    func = lambda x: 100*((x[1] - x[0]) ** 2) + ((1 - x[0]) ** 2)
     x = newton_method(func, eps, x)
-    print('newton method result:', x)
+    print('quadratic function test:', x)
     
     x = np.random.normal(size=[2])
     func = lambda x: 100 * (x[1] - x[0] ** 2) ** 2 + (1 - x[0]) ** 2
     x = newton_method(func, eps, x)
-    print('newton method result:', x)
+    print('Rosenbrock functiom test', x)
 
     # 2 / exp(((x - 1) / 2)^2 + (y- 1)^2) +  3 / exp(((x - 2) / 3)^2 + ((y - 3) / 2)^2)
     # 2 * exp(-((x - 1) / 2)^2 - (y- 1)^2) +  3 * exp(-((x - 2) / 3)^2 - ((y - 3) / 2)^2)
@@ -89,15 +100,17 @@ def test_newton_method():
             x = newton_method(func, eps, x.copy())
             i += 1
         except:
-            print('bad starting point', x)
+            print('Bad starting point', x)
 
-        print('test func result:', x)
+        print('Test func:', x)
         print('f(x) = ', func(x))
+
+    print('')
 
 ##########################################################################################
 
-def lab_test() 
+#def lab_test() 
 
 if __name__ == "__main__":
+    test_conjugate_gradient_method()
     test_newton_method()
-    # test_conjugate_gradient_method()
