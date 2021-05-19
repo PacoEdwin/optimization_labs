@@ -192,9 +192,9 @@ class SimplexSolver():
         return I
 
 def run_test():
-    SimplexSolver().run_simplex([[2,1], [1,2]], [4,3], [1,1])
+    SimplexSolver().run_simplex([[2,1], [1,2]], [4,3], [1,1], 'min')
     SimplexSolver().run_simplex(
-        [[3,4,1,0,0], [3,1,0,1,0], [1,0,0,0,1]], 
+        [[3,4,1,0,0], [3,1,0,1,0], [1,0,0,0,1]],
         [32,17,5],
         [2,1,0,0,0]
     )
@@ -203,6 +203,12 @@ def run_test():
         [3,4],
         [-1,5,1,-1],
         'min'
+    )
+    SimplexSolver().run_simplex(
+        [[2,1],[1,1]],
+        [6,4],
+        [3,2],
+        prob='min'
     )
 
 if __name__ == '__main__':
